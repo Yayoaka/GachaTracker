@@ -1,0 +1,9 @@
+.game-card.selected {
+    border-color: #007bff;
+    background-color: #e7f3ff;
+}
+
+.game-tabs .btn.active {
+    background-color: #007bff;
+    color: white;
+}

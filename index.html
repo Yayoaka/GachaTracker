@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gacha Tracker</title>
+    <link rel="stylesheet" href="Assets/css/styles.css">
+    <link rel="stylesheet" href="Assets/css/btn_index_style.css">
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div class="logo">Lucas Studer</div>
+            <div class="nav-buttons">
+                <button class="btn" onclick="showPage('accueil')">🏠 Accueil</button>
+                <button class="btn" onclick="showPage('jeux')">🎯 Mes Jeux</button>
+                <button class="btn" onclick="showPage('collection')">📚 Collection</button>
+                <button class="btn" onclick="showPage('favoris')">📚 Favoris</button>
+            </div>
+
+            </ul>
+            <ul class="social-links">
+                <li><a href="https://github.com/Yayoaka" target="_blank" title="GitHub"><i
+                            class="fab fa-github"></i></a></li>
+            </ul>
+            <button onclick="logout()">Déconnexion</button>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="header">
+            <h1>🎮 GachaTracker</h1>
+            <p>Gère tes collections de personnages gacha en un clic</p>
+        </div>
+
+        <!-- Page d'accueil -->
+        <div id="accueil" class="page active">
+            <div class="welcome-section">
+                <h2>Bienvenue sur GachaTracker !</h2>
+                <p>Enfin un outil simple pour gérer tes collections de personnages dans tes jeux gacha favoris.
+                    Fini les notes éparses et les captures d'écran perdues !</p>
+
+                <div class="features">
+                    <div class="feature">
+                        <div class="feature-icon">🎯</div>
+                        <h3>Multi-jeux</h3>
+                        <p>Support pour Seven Knights, Solo Leveling, et bien d'autres</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">⭐</div>
+                        <h3>Suivi complet</h3>
+                        <p>Niveau, étoiles, doublons, notes personnelles</p>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">💾</div>
+                        <h3>Sauvegarde locale</h3>
+                        <p>Tes données restent sur ton appareil</p>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="showPage('jeux')">🚀 Commencer maintenant</button>
+            </div>
+        </div>
+
+        <!-- Page de sélection des jeux -->
+        <div id="jeux" class="page">
+            <h2>🎯 Sélectionne tes jeux</h2>
+            <p>Coche les jeux auxquels tu joues actuellement :</p>
+
+            <div class="game-selection">
+                <div class="game-card" onclick="toggleGame(this, 'seven-knights')">
+                    <input type="checkbox" id="seven-knights">
+                    <label for="seven-knights-idle-adventure">
+                        <strong>Seven Knights Idle Adventure</strong>
+                        <br><small>RPG idle avec système de héros</small>
+                    </label>
+                </div>
+
+                <div class="game-card" onclick="toggleGame(this, 'solo-leveling')">
+                    <input type="checkbox" id="solo-leveling">
+                    <label for="solo-leveling-arise">
+                        <strong>Solo Leveling Arise</strong>
+                        <br><small>Action RPG basé sur le manhwa</small>
+                    </label>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn" id="save-games-btn">💾 Sauvegarder et continuer</button>
+            </div>
+        </div>
+
+        <!-- Page de collection -->
+        <div id="collection" class="page">
+            <div class="collection-header">
+                <h2>📚 Ma Collection</h2>
+                <button class="btn secondary" onclick="showAddForm()">➕ Ajouter un personnage</button>
+            </div>
+
+            <div class="game-tabs">
+                <!-- Onglets générés dynamiquement pour la collection -->
+            </div>
+
+            <div id="add-form" class="add-character-form" style="display: none;">
+                <h3>✨ Ajouter un nouveau personnage</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="char-game">Jeu :</label>
+                        <select id="char-game">
+                            <option value="">Sélectionner un jeu</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="char-name">Nom du personnage :</label>
+                        <select id="char-name">
+                            <option value="">Sélectionner d'abord un jeu</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="char-level">Niveau :</label>
+                        <input type="number" id="char-level" min="1" max="999" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="char-copies">Copies/Doublons :</label>
+                        <input type="number" id="char-copies" min="0" max="99" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="char-note">Note personnelle :</label>
+                        <input type="text" id="char-note" placeholder="Tank principal, à améliorer...">
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn" onclick="addCharacter()">💾 Ajouter à la collection</button>
+                    <button class="btn secondary" onclick="hideAddForm()">❌ Annuler</button>
+                </div>
+            </div>
+
+            <div id="characters-container">
+                <div id="no-characters" style="text-align: center; padding: 40px; color: #666;">
+                    <h3>🎯 Aucun personnage pour le moment</h3>
+                    <p>Clique sur "Ajouter un personnage" pour commencer ta collection !</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page des favoris -->
+        <div id="favoris" class="page">
+            <div class="favoris-header">
+                <h2>📚 Mes Favoris</h2>
+            </div>
+
+            <div id="favoris-characters-container">
+                <div style="text-align: center; padding: 40px; color: #666;">
+                    <h3>🎯 Aucun personnage favori pour le moment</h3>
+                    <p>Ajoute des personnages à tes favoris depuis ta collection !</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Lucas Studer - Game Developer. Tous droits réservés.</p>
+    </footer>
+
+    <script src="Assets/Js/script.js"></script>
+
+</body>
+
+</html>

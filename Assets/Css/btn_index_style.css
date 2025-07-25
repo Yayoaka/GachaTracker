@@ -1,0 +1,15 @@
+/* Pour les boutons */
+.btn.active {
+    background-color: #444;
+    color: #fff;
+    font-weight: bold;
+}
+
+/* Pour les pages */
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
