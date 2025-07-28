@@ -255,6 +255,20 @@ function populateCharacterDropdown(gameId) {
         if (doublonGroup) doublonGroup.style.display = config.showDoublon ? "block" : "none";
     }
 
+    // 🆕 Ajouter un événement pour remplir automatiquement l'arme quand on sélectionne un personnage
+    dropdown.addEventListener('change', function () {
+        const selectedCharName = this.value;
+        if (selectedCharName) {
+            const selectedChar = characters.find(char => char.name === selectedCharName);
+            if (selectedChar && selectedChar.weapon) {
+                const weaponInput = document.getElementById("char-weapon");
+                if (weaponInput) {
+                    weaponInput.value = selectedChar.weapon;
+                }
+            }
+        }
+    });
+
 }
 
 // Obtenir le label d'affichage d'un jeu
@@ -285,13 +299,21 @@ function saveUserCollection() {
     localStorage.setItem("userCollection", JSON.stringify(userCollection));
 }
 
-// Ajout d'un personnage à la collection
+// Nouvelle version de addCharacter() adaptée au nouveau formulaire
 function addCharacter() {
     const game = document.getElementById('char-game')?.value;
     const name = document.getElementById('char-name')?.value;
     const level = parseInt(document.getElementById('char-level')?.value) || 1;
     const doublon = parseInt(document.getElementById('char-copies')?.value) || 0;
-    const note = document.getElementById('char-note')?.value || '';
+
+    const weapon = document.getElementById('char-weapon')?.value || "";
+    const weaponLevel = parseInt(document.getElementById('char-weapon-level')?.value) || 1;
+    const weaponDoublon = parseInt(document.getElementById('char-weapon-copies')?.value) || 0;
+
+    const powerTotal = document.getElementById('char-power')?.value || "";
+    const statsPrincipal = document.getElementById('char-stats-principal')?.value || "";
+    const statsSecondary = document.getElementById('char-stats-secondary')?.value || "";
+    const description = document.getElementById('char-description')?.value || "";
 
     if (!game || !name) {
         showNotification("Tu dois sélectionner un jeu et un personnage.", 'warning');
@@ -307,12 +329,12 @@ function addCharacter() {
         return;
     }
 
-    if (level > baseChar.maxLevel || doublon > baseChar.maxDoublon) {
-        showNotification(`Ce personnage est limité à un niveau max de ${baseChar.maxLevel} et ${baseChar.maxDoublon} doublons.`, 'error');
+    if (level > baseChar.maxLevel || doublon > baseChar.maxDoublon ||
+        weaponLevel > baseChar.maxLevelWeapon || weaponDoublon > baseChar.maxDoublonWeapon) {
+        showNotification(`Limite dépassée : perso max niveau ${baseChar.maxLevel}, ${baseChar.maxDoublon} doublons, arme max niveau ${baseChar.maxLevelWeapon}, ${baseChar.maxDoublonWeapon} doublons.`, 'error');
         return;
     }
 
-    // Vérifier si déjà ajouté
     const exists = userCollection.find(c =>
         c.name.toLowerCase() === name.toLowerCase() && c.game === game
     );
@@ -323,12 +345,19 @@ function addCharacter() {
     }
 
     const newCharacter = {
-        id: Date.now(), // ID unique
+        id: Date.now(),
         game,
         name: baseChar.name,
+        type: baseChar.type || "",
         level,
         doublon,
-        note,
+        weapon,
+        weaponLevel,
+        weaponDoublon,
+        powerTotal,
+        statsPrincipal,
+        statsSecondary,
+        description,
         isFavorite: false,
         tags: [],
         dateAdded: new Date().toISOString()
@@ -337,12 +366,13 @@ function addCharacter() {
     userCollection.push(newCharacter);
     saveUserCollection();
     refreshCharacterDisplay();
-    hideAddForm(); // Masquer le formulaire après ajout
+    hideAddForm();
 
     showNotification(`${baseChar.name} ajouté à ta collection !`, 'success');
 }
 
-// NOUVELLE FONCTION: Modifier un personnage
+// Fonction pour modifier un personnage existant
+type = "";
 let editingCharacterId = null;
 
 function editCharacter(charId) {
@@ -351,27 +381,29 @@ function editCharacter(charId) {
 
     editingCharacterId = parseInt(charId);
 
-    // Remplir le formulaire avec les données existantes
     document.getElementById('char-game').value = char.game;
     populateCharacterDropdown(char.game);
 
-    // Attendre que la liste soit peuplée avant de sélectionner le personnage
     setTimeout(() => {
         document.getElementById('char-name').value = char.name;
     }, 100);
 
     document.getElementById('char-level').value = char.level;
     document.getElementById('char-copies').value = char.doublon;
-    document.getElementById('char-note').value = char.note;
+    document.getElementById('char-weapon').value = char.weapon;
+    document.getElementById('char-weapon-level').value = char.weaponLevel;
+    document.getElementById('char-weapon-copies').value = char.weaponDoublon;
+    document.getElementById('char-power').value = char.powerTotal;
+    document.getElementById('char-stats-principal').value = char.statsPrincipal;
+    document.getElementById('char-stats-secondary').value = char.statsSecondary;
+    document.getElementById('char-description').value = char.description;
 
-    // Changer le texte du bouton et la fonction
     const submitBtn = document.querySelector('#add-form button[onclick="addCharacter()"]');
     if (submitBtn) {
         submitBtn.textContent = '💾 Modifier le personnage';
         submitBtn.setAttribute('onclick', 'updateCharacter()');
     }
 
-    // Changer le titre du formulaire
     const formTitle = document.querySelector('#add-form h3');
     if (formTitle) {
         formTitle.textContent = '✏️ Modifier le personnage';
@@ -380,7 +412,6 @@ function editCharacter(charId) {
     showAddForm();
 }
 
-// NOUVELLE FONCTION: Mettre à jour un personnage
 function updateCharacter() {
     if (!editingCharacterId) return;
 
@@ -388,7 +419,13 @@ function updateCharacter() {
     const name = document.getElementById('char-name')?.value;
     const level = parseInt(document.getElementById('char-level')?.value) || 1;
     const doublon = parseInt(document.getElementById('char-copies')?.value) || 0;
-    const note = document.getElementById('char-note')?.value || '';
+    const weapon = document.getElementById('char-weapon')?.value || "";
+    const weaponLevel = parseInt(document.getElementById('char-weapon-level')?.value) || 1;
+    const weaponDoublon = parseInt(document.getElementById('char-weapon-copies')?.value) || 0;
+    const powerTotal = document.getElementById('char-power')?.value || "";
+    const statsPrincipal = document.getElementById('char-stats-principal')?.value || "";
+    const statsSecondary = document.getElementById('char-stats-secondary')?.value || "";
+    const description = document.getElementById('char-description')?.value || "";
 
     if (!game || !name) {
         showNotification("Tu dois sélectionner un jeu et un personnage.", 'warning');
@@ -404,21 +441,28 @@ function updateCharacter() {
         return;
     }
 
-    if (level > baseChar.maxLevel || doublon > baseChar.maxDoublon) {
-        showNotification(`Ce personnage est limité à un niveau max de ${baseChar.maxLevel} et ${baseChar.maxDoublon} doublons.`, 'error');
+    if (level > baseChar.maxLevel || doublon > baseChar.maxDoublon ||
+        weaponLevel > baseChar.maxLevelWeapon || weaponDoublon > baseChar.maxDoublonWeapon) {
+        showNotification(`Limite dépassée : perso max niveau ${baseChar.maxLevel}, ${baseChar.maxDoublon} doublons, arme max niveau ${baseChar.maxLevelWeapon}, ${baseChar.maxDoublonWeapon} doublons.`, 'error');
         return;
     }
 
-    // Trouver et mettre à jour le personnage
     const charIndex = userCollection.findIndex(c => c.id === editingCharacterId);
     if (charIndex !== -1) {
         userCollection[charIndex] = {
             ...userCollection[charIndex],
             game,
             name: baseChar.name,
+            type: baseChar.type || "",
             level,
             doublon,
-            note
+            weapon,
+            weaponLevel,
+            weaponDoublon,
+            powerTotal,
+            statsPrincipal,
+            statsSecondary,
+            description
         };
 
         saveUserCollection();
@@ -430,19 +474,20 @@ function updateCharacter() {
     }
 }
 
-// NOUVELLE FONCTION: Remettre le formulaire en mode ajout
-function resetAddFormToAdd() {
-    editingCharacterId = null;
-
-    const submitBtn = document.querySelector('#add-form button[onclick="updateCharacter()"]');
-    if (submitBtn) {
-        submitBtn.textContent = '💾 Ajouter à la collection';
-        submitBtn.setAttribute('onclick', 'addCharacter()');
-    }
-
-    const formTitle = document.querySelector('#add-form h3');
-    if (formTitle) {
-        formTitle.textContent = '✨ Ajouter un nouveau personnage';
+function resetAddForm() {
+    const form = document.getElementById('add-form');
+    if (form) {
+        form.querySelector('#char-game').value = '';
+        form.querySelector('#char-name').innerHTML = '<option value="">Sélectionner d\'abord un jeu</option>';
+        form.querySelector('#char-level').value = '1';
+        form.querySelector('#char-copies').value = '0';
+        form.querySelector('#char-weapon').value = '';
+        form.querySelector('#char-weapon-level').value = '1';
+        form.querySelector('#char-weapon-copies').value = '0';
+        form.querySelector('#char-power').value = '';
+        form.querySelector('#char-stats-principal').value = '';
+        form.querySelector('#char-stats-secondary').value = '';
+        form.querySelector('#char-description').value = '';
     }
 }
 
@@ -498,7 +543,7 @@ function refreshCharacterDisplay() {
     displayFilteredCharacters(userCollection);
 }
 
-// Créer une carte de personnage
+// Créer une carte de personnage (mise à jour)
 function createCharacterCard(char, container) {
     const card = document.createElement("div");
     card.classList.add("character-card");
@@ -513,9 +558,14 @@ function createCharacterCard(char, container) {
         </div>
         <div class="card-body">
             <p><strong>Jeu :</strong> ${getGameLabel(char.game)}</p>
+            <p><strong>Type :</strong> ${char.type || '—'}</p>
             <p><strong>Niveau :</strong> ${char.level}</p>
-            <p><strong>Doublons :</strong> ${char.doublon}</p>
-            <p><strong>Note :</strong> ${char.note || "—"}</p>
+            <p><strong>Doublons perso :</strong> ${char.doublon}</p>
+            <p><strong>Arme :</strong> ${char.weapon || '—'} (${char.weaponLevel || '—'} lvl, ${char.weaponDoublon || 0} doublons)</p>
+            <p><strong>Puissance :</strong> ${char.powerTotal || '—'}</p>
+            <p><strong>Stat principale :</strong> ${char.statsPrincipal || '—'}</p>
+            <p><strong>Stats secondaires :</strong> ${char.statsSecondary || '—'}</p>
+            <p><strong>Description :</strong> ${char.description || '—'}</p>
         </div>
         <div class="card-actions">
             <button class="btn-edit" onclick="editCharacter(${char.id})">✏️ Modifier</button>
@@ -525,6 +575,7 @@ function createCharacterCard(char, container) {
 
     container.appendChild(card);
 }
+
 
 // Afficher le formulaire d'ajout
 function showAddForm() {

@@ -105,41 +105,75 @@
                 <!-- Onglets générés dynamiquement pour la collection -->
             </div>
 
+            <!-- Nouveau formulaire d'ajout de personnage -->
             <div id="add-form" class="add-character-form" style="display: none;">
                 <h3>✨ Ajouter un nouveau personnage</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="char-game">Jeu :</label>
-                        <select id="char-game">
+                        <select id="char-game" required>
                             <option value="">Sélectionner un jeu</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="char-name">Nom du personnage :</label>
-                        <select id="char-name">
+                        <select id="char-name" required>
                             <option value="">Sélectionner d'abord un jeu</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="char-level">Niveau du personnage :</label>
+                        <input type="number" id="char-level" min="1" max="999" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="char-copies">Doublons personnage :</label>
+                        <input type="number" id="char-copies" min="0" max="99" required>
+                    </div>
                 </div>
+
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="char-level">Niveau :</label>
-                        <input type="number" id="char-level" min="1" max="999" value="1">
+                        <label for="char-weapon">Nom de l'arme :</label>
+                        <input type="text" id="char-weapon" placeholder="Nom de l'arme">
                     </div>
                     <div class="form-group">
-                        <label for="char-copies">Copies/Doublons :</label>
-                        <input type="number" id="char-copies" min="0" max="99" value="0">
+                        <label for="char-weapon-level">Niveau de l'arme :</label>
+                        <input type="number" id="char-weapon-level" min="1" max="999" required>
                     </div>
                     <div class="form-group">
-                        <label for="char-note">Note personnelle :</label>
-                        <input type="text" id="char-note" placeholder="Tank principal, à améliorer...">
+                        <label for="char-weapon-copies">Doublons de l'arme :</label>
+                        <input type="number" id="char-weapon-copies" min="0" max="99" required>
                     </div>
                 </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="char-power">Puissance totale :</label>
+                        <input type="text" id="char-power" placeholder="ex : 120000">
+                    </div>
+                    <div class="form-group">
+                        <label for="char-stats-principal">Stat principale :</label>
+                        <input type="text" id="char-stats-principal" placeholder="ex : ATK / HP / DEF">
+                    </div>
+                    <div class="form-group">
+                        <label for="char-stats-secondary">Stats secondaires :</label>
+                        <input type="text" id="char-stats-secondary" placeholder="ex : Crit %, Crit Dmg">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="char-description">Description / Note perso :</label>
+                        <input type="text" id="char-description" placeholder="Mon tank PvE / DPS boss etc...">
+                    </div>
+                </div>
+
                 <div style="text-align: center; margin-top: 20px;">
                     <button class="btn" onclick="addCharacter()">💾 Ajouter à la collection</button>
                     <button class="btn secondary" onclick="hideAddForm()">❌ Annuler</button>
                 </div>
             </div>
+
 
             <div id="characters-container">
                 <div id="no-characters" style="text-align: center; padding: 40px; color: #666;">
