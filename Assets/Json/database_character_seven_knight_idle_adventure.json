@@ -1,8 +1,16 @@
 [
     {
-        "name": "Rudy",
-        "maxLevel": 100,
-        "maxDoublon": 10,
-        "description": "Tank principal"
+        "name": "",
+        "type": "",
+        "weapon": "",
+        "level": 100,
+        "doublon": 10,
+        "weaponLevel": 100,
+        "powerTotal": "Power total",
+        "statsPrincipal": "DPS, DEF, HP",
+        "statsSecondary": "Potentiel stats",
+        "statsSecondaryAccessoire": "4 accessoire allant de 0 à 7",
+        "BonusStats": "Bonus",
+        "description": "Description perso"
     }
 ]

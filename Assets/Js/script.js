@@ -313,6 +313,7 @@ function addCharacter() {
     const powerTotal = document.getElementById('char-power')?.value || "";
     const statsPrincipal = document.getElementById('char-stats-principal')?.value || "";
     const statsSecondary = document.getElementById('char-stats-secondary')?.value || "";
+    const bonusStats = document.getElementById('char-bonus')?.value || "";
     const description = document.getElementById('char-description')?.value || "";
 
     if (!game || !name) {
@@ -357,6 +358,7 @@ function addCharacter() {
         powerTotal,
         statsPrincipal,
         statsSecondary,
+        BonusStats: bonusStats,
         description,
         isFavorite: false,
         tags: [],
@@ -396,6 +398,7 @@ function editCharacter(charId) {
     document.getElementById('char-power').value = char.powerTotal;
     document.getElementById('char-stats-principal').value = char.statsPrincipal;
     document.getElementById('char-stats-secondary').value = char.statsSecondary;
+    document.getElementById('char-bonus').value = char.BonusStats || "";
     document.getElementById('char-description').value = char.description;
 
     const submitBtn = document.querySelector('#add-form button[onclick="addCharacter()"]');
@@ -425,6 +428,7 @@ function updateCharacter() {
     const powerTotal = document.getElementById('char-power')?.value || "";
     const statsPrincipal = document.getElementById('char-stats-principal')?.value || "";
     const statsSecondary = document.getElementById('char-stats-secondary')?.value || "";
+    const bonusStats = document.getElementById('char-bonus')?.value || "";
     const description = document.getElementById('char-description')?.value || "";
 
     if (!game || !name) {
@@ -462,6 +466,7 @@ function updateCharacter() {
             powerTotal,
             statsPrincipal,
             statsSecondary,
+            BonusStats: bonusStats,
             description
         };
 
@@ -487,6 +492,7 @@ function resetAddForm() {
         form.querySelector('#char-power').value = '';
         form.querySelector('#char-stats-principal').value = '';
         form.querySelector('#char-stats-secondary').value = '';
+        form.querySelector('#char-bonus').value = "";
         form.querySelector('#char-description').value = '';
     }
 }
@@ -565,6 +571,7 @@ function createCharacterCard(char, container) {
             <p><strong>Puissance :</strong> ${char.powerTotal || '—'}</p>
             <p><strong>Stat principale :</strong> ${char.statsPrincipal || '—'}</p>
             <p><strong>Stats secondaires :</strong> ${char.statsSecondary || '—'}</p>
+            <p><strong>Bonus Stats :</strong> ${char.BonusStats || '—'}</p>
             <p><strong>Description :</strong> ${char.description || '—'}</p>
         </div>
         <div class="card-actions">
